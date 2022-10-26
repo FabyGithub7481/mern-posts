@@ -1,5 +1,11 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import { getPostsRequest, createPostRequest } from "../api/posts.js";
+import {
+  getPostsRequest,
+  createPostRequest,
+  deletePostRequest,
+  getPostRequest,
+  updatePostRequest,
+} from "../api/posts.js";
 
 const postContext = createContext();
 
@@ -14,15 +20,45 @@ export const PostProvider = ({ children }) => {
   const getPosts = async () => {
     const res = await getPostsRequest();
     //setPosts([]);
+
     setPosts(res.data);
-    //console.log(res)
+    //aqui se produce empieza a
   };
 
   const createPost = async (post) => {
-    //console.log({ postcontext: post });
-    const res = await createPostRequest(post)
-    console.log(res.data)
+    try {
+      //console.log({ postcontext: post });
+      const res = await createPostRequest(post);
+      console.log(res)
+      setPosts([...posts, res.data]);
+      //console.log(res.data)
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  const deletePost = async (id) => {
+    const res = await deletePostRequest(id);
+    if (res.status === 204) {
+      setPosts(posts.filter((post) => post._id !== id));
+    }
+    //console.log(res)
+    //console.log(id);
+  };
+
+  const getPost = async (id) => {
+    const res = await getPostRequest(id);
+    //console.log(res.data);
+    return res.data;
+  };
+
+  const updatePost = async (id, post) => {
+    const res = await updatePostRequest(id, post);
+    setPosts(posts.map((post) => (post._id === id ? res.data : post)));
+
+    //console.log(res);
+  };
+
   useEffect(() => {
     getPosts();
   });
@@ -31,7 +67,10 @@ export const PostProvider = ({ children }) => {
       value={{
         posts,
         getPosts,
-        createPost
+        createPost,
+        deletePost,
+        getPost,
+        updatePost,
       }}
     >
       {children}
