@@ -1,15 +1,19 @@
+import { useEffect } from "react";
 import { usePosts } from "../context/postContext";
-import {Link} from 'react-router-dom';
 
 export function HomePage() {
-  const { setPosts } = usePosts();
+  const { getPosts, posts } = usePosts();
+
+  useEffect(() => {
+    getPosts();
+  }, []);
+
   return (
     <div>
-      HomePage
-      <Link to='/new' className="text-red-900 block">
-        go to new 
-      </Link>
-      <button className="bg-red-100" onClick={()  => setPosts([1,2,3])}>Add</button>
+      {posts.map((post) => (
+        <div key={post._id}>
+        {post.title}</div>
+      ))}
     </div>
   );
 }
