@@ -2,7 +2,7 @@ import express from "express";
 import postsRoutes from "./routes/posts.routes.js";
 import fileupload from "express-fileupload";
 import { dirname, join } from "path";
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from "url";
 
 const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -18,6 +18,10 @@ app.use(
 
 //routes
 app.use(postsRoutes);
-app.use(express.static(join(__dirname,'../client/build')));
+app.use(express.static(join(__dirname, "../client/build")));
+
+app.get('*',(req,res)  => {
+  res.sendFile((join(__dirname, "../client/build.index.html")))
+})
 
 export default app;
